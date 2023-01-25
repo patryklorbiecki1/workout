@@ -1,9 +1,9 @@
 package pl.org.workout.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import pl.org.workout.enitities.Profile;
 import org.springframework.stereotype.Repository;
-import pl.org.workout.enitities.User;
 
 @Repository
-public interface UserRepository extends JpaRepository<User,Long> {
+public interface ProfileRepository extends JpaRepository<Profile,Long> {
 }

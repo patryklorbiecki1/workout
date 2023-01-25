@@ -3,6 +3,8 @@ package pl.org.workout.enitities;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.FieldNameConstants;
+
+import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.time.Instant;
@@ -13,8 +15,7 @@ import java.time.Instant;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @FieldNameConstants
-@javax.persistence.Entity
-@Table(name = "user")
+@Entity
 public class User{
     @Id
     Long id;

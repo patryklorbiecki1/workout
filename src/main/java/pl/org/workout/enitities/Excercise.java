@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
 import javax.persistence.*;
-
+@Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
