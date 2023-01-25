@@ -5,6 +5,7 @@ import lombok.experimental.FieldDefaults;
 import lombok.experimental.FieldNameConstants;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.time.Instant;
 
 @Data
 @Builder
@@ -23,4 +24,6 @@ public class User{
     String password;
     @NonNull
     String username;
+    @NonNull
+    Instant createDate = Instant.now();
 }

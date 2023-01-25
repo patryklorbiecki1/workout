@@ -6,8 +6,6 @@ import lombok.Getter;
 import lombok.experimental.FieldDefaults;
 import pl.org.workout.enitities.User;
 
-import java.util.List;
-
 @Getter
 @AllArgsConstructor
 @FieldDefaults(makeFinal = true,level = AccessLevel.PRIVATE)
