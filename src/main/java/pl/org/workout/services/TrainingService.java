@@ -12,5 +12,5 @@ public interface TrainingService {
     TrainingResponse get(Long trainingId) throws EntityNotFoundException;
     MessageResponse add(AddTrainingRequest addTrainingRequest);
     TrainingResponse update();
-    TrainingResponse remove(Long trainingId);
+    void remove(Long trainingId);
 }

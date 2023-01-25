@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import pl.org.workout.dtos.Request.AddTrainingRequest;
 import pl.org.workout.dtos.Response.MessageResponse;
 import pl.org.workout.dtos.Response.TrainingResponse;
+import pl.org.workout.enitities.Training;
 import pl.org.workout.exceptions.EntityNotFoundException;
 import pl.org.workout.repositories.TrainingRepository;
 
@@ -20,12 +21,13 @@ public class TrainingServiceImpl implements TrainingService{
     TrainingRepository trainingRepository;
     @Override
     public List<TrainingResponse> getAll() {
-        return null;
+        return trainingRepository.findAll().stream().map(TrainingResponse::from).toList();
     }
 
     @Override
-    public TrainingResponse get(Long trainingId) throws EntityNotFoundException {
-        return null;
+    public TrainingResponse get(Long id) throws EntityNotFoundException {
+        return TrainingResponse.from(trainingRepository.findById(id)
+                .orElseThrow(()-> new EntityNotFoundException(Training.class)));
     }
 
     @Override
@@ -39,7 +41,7 @@ public class TrainingServiceImpl implements TrainingService{
     }
 
     @Override
-    public TrainingResponse remove(Long trainingId) {
-        return null;
+    public void remove(Long trainingId) {
+        trainingRepository.deleteById(trainingId);
     }
 }

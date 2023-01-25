@@ -6,8 +6,8 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.org.workout.dtos.Request.AddExcerciseRequest;
+import pl.org.workout.dtos.Response.ExcerciseResponse;
 import pl.org.workout.dtos.Response.MessageResponse;
-import pl.org.workout.dtos.Response.TrainingResponse;
 import pl.org.workout.exceptions.EntityNotFoundException;
 
 import java.util.List;
@@ -15,13 +15,14 @@ import java.util.List;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @FieldDefaults(makeFinal = true,level = AccessLevel.PRIVATE)
 public class ExcerciseServiceImpl implements ExcerciseService{
+
     @Override
-    public List<TrainingResponse> getAll() {
+    public List<ExcerciseResponse> getAll() {
         return null;
     }
 
     @Override
-    public TrainingResponse get(Long excerciseId) throws EntityNotFoundException {
+    public ExcerciseResponse get(Long excerciseId) throws EntityNotFoundException {
         return null;
     }
 
@@ -31,12 +32,12 @@ public class ExcerciseServiceImpl implements ExcerciseService{
     }
 
     @Override
-    public TrainingResponse update() {
+    public ExcerciseResponse update() {
         return null;
     }
 
     @Override
-    public TrainingResponse remove(Long excerciseId) {
+    public ExcerciseResponse remove(Long excerciseId) {
         return null;
     }
 }
