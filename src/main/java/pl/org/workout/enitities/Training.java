@@ -1,27 +1,28 @@
 package pl.org.workout.enitities;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
+import lombok.experimental.FieldNameConstants;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.persistence.*;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.util.List;
 
-@Entity
+
 @Data
+@Document
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@FieldNameConstants
 public class Training {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    String id;
+    @NonNull
     LocalDate date;
+    @NonNull
     Duration duration;
-    @OneToMany(mappedBy = "training",cascade = CascadeType.ALL)
     List<Excercise> excercises;
 }

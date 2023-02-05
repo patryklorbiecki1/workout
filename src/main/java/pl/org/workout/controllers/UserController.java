@@ -27,7 +27,7 @@ public class UserController {
         return new ResponseEntity<>(userService.getAll(), HttpStatus.OK);
     }
     @GetMapping("{id}")
-    public ResponseEntity<?> get(@PathVariable Long id){
+    public ResponseEntity<?> get(@PathVariable String id){
         try {
             return ResponseEntity.ok(userService.get(id));
         }catch (Exception e){

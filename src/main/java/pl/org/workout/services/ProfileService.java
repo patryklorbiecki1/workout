@@ -7,5 +7,5 @@ import pl.org.workout.exceptions.EntityNotFoundException;
 public interface ProfileService {
 
     MessageResponse updateInfo();
-    ProfileResponse get(Long id) throws EntityNotFoundException;
+    ProfileResponse get(String id) throws EntityNotFoundException;
 }

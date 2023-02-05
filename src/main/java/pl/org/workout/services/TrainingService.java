@@ -9,8 +9,8 @@ import java.util.List;
 
 public interface TrainingService {
     List<TrainingResponse> getAll();
-    TrainingResponse get(Long trainingId) throws EntityNotFoundException;
+    TrainingResponse get(String trainingId) throws EntityNotFoundException;
     MessageResponse add(AddTrainingRequest addTrainingRequest);
     TrainingResponse update();
-    void remove(Long trainingId);
+    void remove(String trainingId);
 }

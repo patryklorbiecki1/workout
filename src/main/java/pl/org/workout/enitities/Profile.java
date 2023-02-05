@@ -2,27 +2,27 @@ package pl.org.workout.enitities;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import lombok.experimental.FieldNameConstants;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.persistence.*;
 import java.util.List;
 
-@Entity
 @Data
+@Document
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@FieldNameConstants
 public class Profile {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long Id;
+    String id;
     String firstname;
     String lastname;
     Double weight;
     Double height;
     String trainingGoal;
-    @OneToMany(mappedBy = "profile",cascade = CascadeType.ALL)
     List<Training> trainings;
-    @OneToOne(mappedBy = "profile")
     User user;
 }

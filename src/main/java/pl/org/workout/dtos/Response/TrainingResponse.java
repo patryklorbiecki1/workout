@@ -17,13 +17,11 @@ import java.util.List;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
 public class TrainingResponse {
-    Long id;
     LocalDate date;
     Duration duration;
     List<Excercise> excercises;
     public static TrainingResponse from(Training training){
         return new TrainingResponse(
-                training.getId(),
                 training.getDate(),
                 training.getDuration(),
                 training.getExcercises()

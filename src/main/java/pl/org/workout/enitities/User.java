@@ -3,26 +3,28 @@ package pl.org.workout.enitities;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.FieldNameConstants;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
 import java.time.Instant;
 
 @Data
+@Document
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @FieldNameConstants
-@Entity
 public class User{
     @Id
-    Long id;
+    String id;
+    @Indexed(unique = true)
     @NonNull
     String email;
     @NonNull
     String password;
+    @Indexed(unique = true)
     @NonNull
     String username;
     @NonNull

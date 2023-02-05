@@ -14,18 +14,21 @@ import pl.org.workout.repositories.TrainingRepository;
 
 import java.util.List;
 @Service
-@RequiredArgsConstructor(onConstructor = @__(@Autowired))
-@FieldDefaults(makeFinal = true,level = AccessLevel.PRIVATE)
+//@FieldDefaults(makeFinal = true,level = AccessLevel.PRIVATE)
+//@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class TrainingServiceImpl implements TrainingService{
-
-    TrainingRepository trainingRepository;
+    private final TrainingRepository trainingRepository;
+    @Autowired
+    public TrainingServiceImpl(TrainingRepository trainingRepository){
+        this.trainingRepository = trainingRepository;
+    }
     @Override
     public List<TrainingResponse> getAll() {
         return trainingRepository.findAll().stream().map(TrainingResponse::from).toList();
     }
 
     @Override
-    public TrainingResponse get(Long id) throws EntityNotFoundException {
+    public TrainingResponse get(String id) throws EntityNotFoundException {
         return TrainingResponse.from(trainingRepository.findById(id)
                 .orElseThrow(()-> new EntityNotFoundException(Training.class)));
     }
@@ -41,7 +44,7 @@ public class TrainingServiceImpl implements TrainingService{
     }
 
     @Override
-    public void remove(Long trainingId) {
+    public void remove(String trainingId) {
         trainingRepository.deleteById(trainingId);
     }
 }

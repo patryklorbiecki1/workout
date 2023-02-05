@@ -1,27 +1,28 @@
 package pl.org.workout.enitities;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
+import lombok.experimental.FieldNameConstants;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.persistence.*;
-@Entity
 @Data
+@Document
 @AllArgsConstructor
 @NoArgsConstructor
+@FieldNameConstants
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Excercise {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    String id;
+    @NonNull
     String name;
+    @NonNull
     Integer reps;
+    @NonNull
     Double weight;
+    @NonNull
     Integer sets;
-    @ManyToOne
-    @JoinColumn(name = "training_id")
     Training training;
 
 }

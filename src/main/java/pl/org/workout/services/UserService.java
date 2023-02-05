@@ -13,9 +13,9 @@ import java.util.List;
 
 public interface UserService {
     List<UserResponse> getAll();
-    UserResponse get(Long userId) throws Exception;
+    UserResponse get(String userId) throws Exception;
     JwtResponse signIn(LoginRequest loginRequest);
     MessageResponse addUser(AddUserRequest addUserRequest);
     UserResponse update();
-    UserResponse remove(Long userId);
+    UserResponse remove(String userId);
 }

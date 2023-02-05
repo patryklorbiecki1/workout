@@ -17,18 +17,21 @@ import java.util.List;
 
 @RestController
 @CrossOrigin
-@RequiredArgsConstructor(onConstructor = @__(@Autowired))
-@FieldDefaults(makeFinal = true,level = AccessLevel.PRIVATE)
+//@RequiredArgsConstructor(onConstructor = @__(@Autowired))
+//@FieldDefaults(makeFinal = true,level = AccessLevel.PRIVATE)
 @RequestMapping("api/training")
 public class TrainingController {
-    TrainingService trainingService;
-
+    private final TrainingService trainingService;
+    @Autowired
+    public TrainingController(TrainingService trainingService){
+        this.trainingService = trainingService;
+    }
     @RequestMapping("all")
     public ResponseEntity<List<TrainingResponse>> getAll(){
         return new ResponseEntity<>(trainingService.getAll(), HttpStatus.OK);
     }
     @RequestMapping("{id}")
-    public ResponseEntity<?> get(@PathVariable Long id){
+    public ResponseEntity<?> get(@PathVariable String id){
         try {
             return ResponseEntity.ok(trainingService.get(id));
         }catch (Exception e){

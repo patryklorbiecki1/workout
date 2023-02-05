@@ -29,7 +29,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponse get(Long userId) throws EntityNotFoundException {
+    public UserResponse get(String userId) throws EntityNotFoundException {
         return UserResponse.from(userRepository.findById(userId).
                 orElseThrow(() -> new EntityNotFoundException(User.class)));
     }
@@ -49,7 +49,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponse remove(Long userId) {
+    public UserResponse remove(String userId) {
         return null;
     }
 }

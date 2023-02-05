@@ -24,7 +24,7 @@ public class ProfileServiceImpl implements ProfileService{
     }
 
     @Override
-    public ProfileResponse get(Long id) throws EntityNotFoundException{
+    public ProfileResponse get(String id) throws EntityNotFoundException{
         return ProfileResponse.from(profileRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(Profile.class)));
     }
