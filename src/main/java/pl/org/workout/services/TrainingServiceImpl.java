@@ -14,14 +14,10 @@ import pl.org.workout.repositories.TrainingRepository;
 
 import java.util.List;
 @Service
-//@FieldDefaults(makeFinal = true,level = AccessLevel.PRIVATE)
-//@RequiredArgsConstructor(onConstructor = @__(@Autowired))
+@FieldDefaults(makeFinal = true,level = AccessLevel.PRIVATE)
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class TrainingServiceImpl implements TrainingService{
-    private final TrainingRepository trainingRepository;
-    @Autowired
-    public TrainingServiceImpl(TrainingRepository trainingRepository){
-        this.trainingRepository = trainingRepository;
-    }
+    TrainingRepository trainingRepository;
     @Override
     public List<TrainingResponse> getAll() {
         return trainingRepository.findAll().stream().map(TrainingResponse::from).toList();
