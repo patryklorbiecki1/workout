@@ -12,10 +12,12 @@ import pl.org.workout.enitities.User;
 @Builder
 @FieldDefaults(makeFinal = true,level = AccessLevel.PRIVATE)
 public class UserResponse {
+    String id;
     String username;
     String email;
     public static UserResponse from(User user){
         return new UserResponse(
+                user.getId(),
                 user.getUsername(),
                 user.getEmail()
         );

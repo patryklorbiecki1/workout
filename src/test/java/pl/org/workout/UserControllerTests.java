@@ -34,8 +34,8 @@ public class UserControllerTests {
     @Test
     public void givenListOfUsers_whenGetAllUsers_thenReturnUsersList() throws Exception{
         List<UserResponse> users = new ArrayList<>();
-        users.add(UserResponse.builder().id(1L).email("adam@gmail.com").username("adamsky").build());
-        users.add(UserResponse.builder().id(2L).email("pawel@gmail.com").username("pawelek").build());
+        users.add(UserResponse.builder().id("1").email("adam@gmail.com").username("adamsky").build());
+        users.add(UserResponse.builder().id("2").email("pawel@gmail.com").username("pawelek").build());
         given(userService.getAll()).willReturn(users);
 
         ResultActions response = mockMvc.perform(MockMvcRequestBuilders.get("/api/user/all"));
@@ -47,9 +47,9 @@ public class UserControllerTests {
     }
     @Test
     public void givenUserId_whenGetUser_thenReturnUserObject() throws Exception{
-        long userId = 1L;
+        String userId = "id";
         UserResponse userResponse = UserResponse.builder()
-                .id(1L)
+                .id("id")
                 .email("adam@gmail.com")
                 .username("adamsky")
                 .build();
