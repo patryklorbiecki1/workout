@@ -16,6 +16,5 @@ public interface UserService {
     UserResponse get(String userId) throws Exception;
     JwtResponse signIn(LoginRequest loginRequest);
     MessageResponse addUser(AddUserRequest addUserRequest);
-    UserResponse update();
-    UserResponse remove(String userId);
+    void remove(String userId);
 }

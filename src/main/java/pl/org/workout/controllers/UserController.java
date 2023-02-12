@@ -26,10 +26,10 @@ public class UserController {
     public ResponseEntity<List<UserResponse>> getAll(){
         return new ResponseEntity<>(userService.getAll(), HttpStatus.OK);
     }
-    @GetMapping("{id}")
-    public ResponseEntity<?> get(@PathVariable String id){
+    @GetMapping("{username}")
+    public ResponseEntity<?> get(@PathVariable String username){
         try {
-            return ResponseEntity.ok(userService.get(id));
+            return ResponseEntity.ok(userService.get(username));
         }catch (Exception e){
             return new ResponseEntity<>(e.getMessage(),HttpStatus.NOT_FOUND);
         }
@@ -40,4 +40,9 @@ public class UserController {
         return new ResponseEntity<>(userService.addUser(addUserRequest),HttpStatus.CREATED);
     }
 
+    @DeleteMapping("{id}")
+    public ResponseEntity<String> deleteUser(@PathVariable String id) {
+        userService.remove(id);
+        return new ResponseEntity<>("User deleted",HttpStatus.GONE);
+    }
 }

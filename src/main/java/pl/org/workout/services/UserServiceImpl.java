@@ -14,6 +14,7 @@ import pl.org.workout.enitities.User;
 import pl.org.workout.exceptions.EntityNotFoundException;
 import pl.org.workout.repositories.UserRepository;
 
+import java.time.Instant;
 import java.util.List;
 
 @Service
@@ -29,8 +30,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponse get(String userId) throws EntityNotFoundException {
-        return UserResponse.from(userRepository.findById(userId).
+    public UserResponse get(String username) throws EntityNotFoundException {
+        return UserResponse.from(userRepository.findUserByUsername(username).
                 orElseThrow(() -> new EntityNotFoundException(User.class)));
     }
 
@@ -40,16 +41,31 @@ public class UserServiceImpl implements UserService {
     }
     @Override
     public MessageResponse addUser(AddUserRequest addUserRequest) {
-        return null;
+        if(Boolean.TRUE.equals(userRepository.existsByUsername(addUserRequest.getUsername())))
+        {
+            return MessageResponse.builder()
+                    .message("[ERROR] Username: " + addUserRequest.getUsername() + " is already taken")
+                    .build();
+        }
+        if(Boolean.TRUE.equals(userRepository.existsByEmail(addUserRequest.getEmail())))
+        {
+            return MessageResponse.builder()
+                    .message("[ERROR] Email: " + addUserRequest.getUsername() + " is already taken")
+                    .build();
+        }
+        User user = User.builder()
+                .email(addUserRequest.getEmail())
+                .username(addUserRequest.getUsername())
+                .password(addUserRequest.getPassword())
+                .createDate(Instant.now())
+                .build();
+        userRepository.save(user);
+        return MessageResponse.builder()
+                .message("User: " + addUserRequest.getUsername() + " created successfully").
+                build();
     }
-
     @Override
-    public UserResponse update() {
-        return null;
-    }
-
-    @Override
-    public UserResponse remove(String userId) {
-        return null;
+    public void remove(String userId) {
+        userRepository.deleteUserById(userId);
     }
 }
