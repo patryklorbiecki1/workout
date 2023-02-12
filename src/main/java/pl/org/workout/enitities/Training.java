@@ -12,6 +12,7 @@ import java.util.List;
 
 
 @Data
+@Builder
 @Document
 @AllArgsConstructor
 @NoArgsConstructor

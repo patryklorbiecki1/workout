@@ -31,7 +31,15 @@ public class TrainingServiceImpl implements TrainingService{
 
     @Override
     public MessageResponse add(AddTrainingRequest addTrainingRequest) {
-        return null;
+        Training training = Training.builder()
+                .date(addTrainingRequest.getDate())
+                .duration(addTrainingRequest.getDuration())
+                .excercises(addTrainingRequest.getExcercises())
+                .build();
+        trainingRepository.save(training);
+        return MessageResponse.builder()
+                .message("Training added successfully")
+                .build();
     }
 
     @Override
