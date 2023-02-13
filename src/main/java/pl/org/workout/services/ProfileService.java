@@ -8,5 +8,6 @@ import pl.org.workout.exceptions.EntityNotFoundException;
 public interface ProfileService {
 
     ProfileResponse updateInfo(ProfileUpdateRequest profileUpdateRequest) throws EntityNotFoundException;
-    ProfileResponse get(String id) throws EntityNotFoundException;
+    ProfileResponse get(String email) throws Exception;
+
 }

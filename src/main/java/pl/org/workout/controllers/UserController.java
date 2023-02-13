@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 import pl.org.workout.dtos.Request.AddUserRequest;
 import pl.org.workout.dtos.Response.MessageResponse;
 import pl.org.workout.dtos.Response.UserResponse;
-import pl.org.workout.exceptions.EntityNotFoundException;
 import pl.org.workout.services.UserService;
 
 import java.util.List;
@@ -37,7 +36,7 @@ public class UserController {
 
     @PostMapping("add_user")
     public ResponseEntity<MessageResponse> createUser(@RequestBody AddUserRequest addUserRequest){
-        return new ResponseEntity<>(userService.addUser(addUserRequest),HttpStatus.CREATED);
+         return new ResponseEntity<>(userService.addUser(addUserRequest),HttpStatus.CREATED);
     }
 
     @DeleteMapping("{id}")
