@@ -9,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.org.workout.dtos.Request.ProfileUpdateRequest;
 import pl.org.workout.services.ProfileService;
-import pl.org.workout.services.UserService;
 
 @RestController
 @CrossOrigin

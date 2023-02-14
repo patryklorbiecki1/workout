@@ -8,7 +8,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.org.workout.dtos.Request.AddTrainingRequest;
-import pl.org.workout.dtos.Request.AddUserRequest;
 import pl.org.workout.dtos.Response.MessageResponse;
 import pl.org.workout.dtos.Response.TrainingResponse;
 import pl.org.workout.services.TrainingService;
