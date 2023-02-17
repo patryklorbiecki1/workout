@@ -2,64 +2,69 @@ package pl.org.workout.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
-import pl.org.workout.repositories.UserRepository;
+import pl.org.workout.services.UserDetailsServiceImpl;
 
-import javax.servlet.http.HttpServletResponse;
 
 import java.util.Collections;
 
 import static java.lang.String.format;
 
 @EnableWebSecurity
+@Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final UserRepository userRepository;
+    private final UserDetailsServiceImpl userDetailsService;
     private final JwtTokenFilter jwtTokenFilter;
+    private final AuthEntryPointJwt  authEntryPointJwt;
+    final String[] AUTH_WHITELIST = {
+            // -- Swagger UI v2
+            "/v2/api-docs",
+            "/favicon.ico",
+            "/swagger-resources",
+            "/swagger-resources/**",
+            "/configuration/ui",
+            "/configuration/security",
+            "/swagger-ui.html",
+            "/webjars/**",
+            // -- Swagger UI v3 (OpenAPI)
+            "/v3/api-docs/**",
+            "/swagger-ui/**",
+            "/h2-console/**",
+            "/api/**"
+            // other public endpoints of your API may be appended to this array
+    };
     @Autowired
-    public SecurityConfig(UserRepository userRepository,JwtTokenFilter jwtTokenFilter){
-        this.userRepository = userRepository;
+    public SecurityConfig(UserDetailsServiceImpl userDetailsService, JwtTokenFilter jwtTokenFilter,
+                          AuthEntryPointJwt authEntryPointJwt){
+        this.userDetailsService = userDetailsService;
         this.jwtTokenFilter = jwtTokenFilter;
+        this.authEntryPointJwt = authEntryPointJwt;
     }
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http = http.cors().and().csrf().disable();
-        http = http
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and();
-        http = http
-                .exceptionHandling()
-                .authenticationEntryPoint(
-                        ((request, response, authException) -> {
-                            response.sendError(
-                                    HttpServletResponse.SC_UNAUTHORIZED,
-                                    authException.getMessage()
-                            );
-                        })
-                )
-                .and();
-        http.authorizeRequests()
-               .antMatchers("/api/user/all").permitAll()
-                .antMatchers("/api/user/login").permitAll()
-               .anyRequest().authenticated();
-        http.addFilterBefore(
-                jwtTokenFilter,
-                UsernamePasswordAuthenticationFilter.class
-        );
+        http.headers().frameOptions().sameOrigin().and()
+                .cors().and().csrf().disable()
+                .exceptionHandling().authenticationEntryPoint(authEntryPointJwt)
+                .and()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .authorizeRequests().antMatchers(AUTH_WHITELIST).permitAll()
+                .anyRequest().authenticated()
+                .and()
+                .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
     }
     @Bean
     public CorsFilter corsFilter(){
@@ -75,13 +80,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(username -> (UserDetails) userRepository
-                .findUserByUsername(username)
-                .orElseThrow(()-> new UsernameNotFoundException(
-                        format("User %s, not found",username)
-                )));
+        auth.userDetailsService(username ->
+                (org.springframework.security.core.userdetails.UserDetails) userDetailsService)
+                .passwordEncoder(passwordEncoder());
     }
-
     @Bean
     public PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();

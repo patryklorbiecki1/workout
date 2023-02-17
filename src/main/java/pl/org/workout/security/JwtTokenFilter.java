@@ -40,13 +40,13 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
 
         UserDetails userDetails = (UserDetails) userRepository
-                .findUserByUsername(jwtTokenUtil.getUsernameFromToken(token))
+                .findUserByUsername(jwtTokenUtil.getUserNameFromJwtToken(token))
                 .orElse(null);
         UsernamePasswordAuthenticationToken
                 authenticationToken = new UsernamePasswordAuthenticationToken(
                 userDetails,null,userDetails==null ? List.of() : userDetails.getAuthorities()
         );
-        if(!jwtTokenUtil.validate(token,userDetails)){
+        if(!jwtTokenUtil.validateJwtToken(token)){
             filterChain.doFilter(request,response);
             return;
         }

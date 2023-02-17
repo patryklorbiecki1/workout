@@ -15,13 +15,11 @@ public class UserResponse {
     String id;
     String username;
     String email;
-    String password;
     public static UserResponse from(User user){
         return new UserResponse(
                 user.getId(),
                 user.getUsername(),
-                user.getEmail(),
-                user.getPassword()
+                user.getEmail()
         );
     }
 }

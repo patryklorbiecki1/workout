@@ -4,6 +4,12 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import pl.org.workout.dtos.Request.AddUserRequest;
 import pl.org.workout.dtos.Request.LoginRequest;
@@ -14,6 +20,7 @@ import pl.org.workout.enitities.Profile;
 import pl.org.workout.enitities.User;
 import pl.org.workout.exceptions.EntityNotFoundException;
 import pl.org.workout.repositories.UserRepository;
+import pl.org.workout.security.JwtTokenUtil;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -25,6 +32,9 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
 
     UserRepository userRepository;
+    JwtTokenUtil jwtTokenUtil;
+    AuthenticationManager authenticationManager;
+
     @Override
     public List<UserResponse> getAll() {
         return userRepository.findAll().stream().map(UserResponse::from).toList();
@@ -38,7 +48,20 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public JwtResponse signIn(LoginRequest loginRequest) {
-        return null;
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            String jwt = jwtTokenUtil.generateJwtToken(authentication);
+
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            List<String> roles = userDetails.getAuthorities().stream()
+                    .map(GrantedAuthority::getAuthority)
+                    .toList();
+
+            return new JwtResponse(jwt,
+                    userDetails.getUsername(),
+                    roles);
     }
     @Override
     public MessageResponse addUser(AddUserRequest addUserRequest) {
