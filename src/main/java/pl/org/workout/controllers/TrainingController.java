@@ -6,6 +6,7 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import pl.org.workout.dtos.Request.AddTrainingRequest;
 import pl.org.workout.dtos.Response.MessageResponse;
@@ -21,10 +22,12 @@ import java.util.List;
 @RequestMapping("api/training")
 public class TrainingController {
     TrainingService trainingService;
+    @PreAuthorize("hasRole('USER') or hasRole('MOD') or hasRole('ADMIN')")
     @GetMapping("all")
     public ResponseEntity<List<TrainingResponse>> getAll(){
         return new ResponseEntity<>(trainingService.getAll(), HttpStatus.OK);
     }
+    @PreAuthorize("hasRole('USER') or hasRole('MOD') or hasRole('ADMIN')")
     @GetMapping("{id}")
     public ResponseEntity<?> get(@PathVariable String id){
         try {
@@ -33,6 +36,7 @@ public class TrainingController {
             return new ResponseEntity<>(e.getMessage(),HttpStatus.NOT_FOUND);
         }
     }
+    @PreAuthorize("hasRole('USER') or hasRole('MOD') or hasRole('ADMIN')")
     @PostMapping("add_training")
     public ResponseEntity<MessageResponse> createUser(@RequestBody AddTrainingRequest addTrainingRequest){
         return new ResponseEntity<>(trainingService.add(addTrainingRequest),HttpStatus.CREATED);

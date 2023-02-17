@@ -10,6 +10,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.org.workout.dtos.Request.AddUserRequest;
 import pl.org.workout.dtos.Request.LoginRequest;
@@ -25,6 +26,7 @@ import pl.org.workout.security.JwtTokenUtil;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
@@ -34,6 +36,8 @@ public class UserServiceImpl implements UserService {
     UserRepository userRepository;
     JwtTokenUtil jwtTokenUtil;
     AuthenticationManager authenticationManager;
+    PasswordEncoder encoder;
+
 
     @Override
     public List<UserResponse> getAll() {
@@ -42,8 +46,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponse get(String username) throws EntityNotFoundException {
-        return UserResponse.from(userRepository.findUserByUsername(username).
-                orElseThrow(() -> new EntityNotFoundException(User.class)));
+        return UserResponse.from(userRepository.findUserByUsername(username));
     }
 
     @Override
@@ -89,9 +92,10 @@ public class UserServiceImpl implements UserService {
         User user = User.builder()
                 .email(addUserRequest.getEmail())
                 .username(addUserRequest.getUsername())
-                .password(addUserRequest.getPassword())
+                .password(encoder.encode(addUserRequest.getPassword()))
                 .createDate(Instant.now())
                 .profile(profile)
+                .roles(Set.of(User.Roles.USER))
                 .build();
 
         userRepository.save(user);
