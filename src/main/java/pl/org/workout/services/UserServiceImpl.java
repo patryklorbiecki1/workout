@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -50,21 +51,24 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public JwtResponse signIn(LoginRequest loginRequest) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+    public MessageResponse signIn(LoginRequest loginRequest) {
 
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-            String jwt = jwtTokenUtil.generateJwtToken(authentication);
+        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                loginRequest.getUsername(), loginRequest.getPassword());
+        Authentication authenticationResult;
+        try {
+            authenticationResult = authenticationManager.authenticate(authToken);
+        } catch (AuthenticationException e) {
+            return MessageResponse.builder().message("Wrong username or password").build();
+        }
 
-            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-            List<String> roles = userDetails.getAuthorities().stream()
-                    .map(GrantedAuthority::getAuthority)
-                    .toList();
-
-            return new JwtResponse(jwt,
-                    userDetails.getUsername(),
-                    roles);
+        SecurityContextHolder.getContext().setAuthentication(authenticationResult);
+        UserDetails userDetails = (UserDetails) authenticationResult.getPrincipal();
+        List<String> roles = userDetails.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .toList();
+        String jwtToken = jwtTokenUtil.generateJwtToken(authenticationResult);
+        return MessageResponse.builder().message(new JwtResponse(jwtToken,userDetails.getUsername(),roles).toString()).build();
     }
     @Override
     public MessageResponse addUser(AddUserRequest addUserRequest) {
