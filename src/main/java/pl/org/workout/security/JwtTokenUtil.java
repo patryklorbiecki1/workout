@@ -3,6 +3,7 @@ package pl.org.workout.security;
 import io.jsonwebtoken.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -12,8 +13,10 @@ import java.util.Date;
 @Component
 public class JwtTokenUtil implements Serializable {
         private static final Logger logger = LoggerFactory.getLogger(JwtTokenUtil.class);
-        public static final long jwtExpirationMs = 5 * 60 * 60;
-        private static final String jwtSecret = "secret";
+        @Value("${jwtExpirationMs}")
+        private long jwtExpirationMs;
+        @Value("${jwtSecret}")
+        private String jwtSecret;
     public String generateJwtToken(Authentication authentication) {
 
         UserDetails userPrincipal = (UserDetails) authentication.getPrincipal();

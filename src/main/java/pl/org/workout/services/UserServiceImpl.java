@@ -95,7 +95,7 @@ public class UserServiceImpl implements UserService {
                 .password(encoder.encode(addUserRequest.getPassword()))
                 .createDate(Instant.now())
                 .profile(profile)
-                .roles(Set.of(User.Roles.USER))
+                .roles(Set.of(User.Roles.ROLE_USER))
                 .build();
 
         userRepository.save(user);

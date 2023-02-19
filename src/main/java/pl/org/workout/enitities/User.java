@@ -33,7 +33,7 @@ public class User{
     Instant createDate = Instant.now();
     Profile profile;
     public enum Roles{
-        USER,ADMIN,MOD
+        ROLE_USER,ROLE_ADMIN,ROLE_MOD
     }
     @NonNull
     Set<Roles> roles = new HashSet<>();
