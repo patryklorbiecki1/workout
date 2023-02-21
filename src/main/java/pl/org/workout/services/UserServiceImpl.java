@@ -15,12 +15,15 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.org.workout.dtos.Request.AddUserRequest;
 import pl.org.workout.dtos.Request.LoginRequest;
+import pl.org.workout.dtos.Request.UserRequest;
 import pl.org.workout.dtos.Response.JwtResponse;
 import pl.org.workout.dtos.Response.MessageResponse;
+import pl.org.workout.dtos.Response.ProfileResponse;
 import pl.org.workout.dtos.Response.UserResponse;
 import pl.org.workout.enitities.Profile;
 import pl.org.workout.enitities.User;
 import pl.org.workout.exceptions.EntityNotFoundException;
+import pl.org.workout.repositories.ProfileRepository;
 import pl.org.workout.repositories.UserRepository;
 import pl.org.workout.security.JwtTokenUtil;
 
@@ -35,10 +38,10 @@ import java.util.Set;
 public class UserServiceImpl implements UserService {
 
     UserRepository userRepository;
+    ProfileRepository profileRepository;
     JwtTokenUtil jwtTokenUtil;
     AuthenticationManager authenticationManager;
     PasswordEncoder encoder;
-
 
     @Override
     public List<UserResponse> getAll() {
@@ -105,9 +108,15 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
 
         return MessageResponse.builder()
-                .message("User: " + addUserRequest.getUsername() + " created successfully").
-                build();
+                .message("User: " + addUserRequest.getUsername() + " created successfully")
+                .build();
     }
+
+    @Override
+    public ProfileResponse getProfileByUser(UserRequest userRequest) {
+        return profileRepository.findByUserByEmail(userRequest.getEmail());
+    }
+
     @Override
     public void remove(String userId) {
         userRepository.deleteUserById(userId);

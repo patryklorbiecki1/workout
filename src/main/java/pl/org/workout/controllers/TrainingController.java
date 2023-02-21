@@ -39,7 +39,7 @@ public class TrainingController {
     @PreAuthorize("hasRole('USER') or hasRole('MOD') or hasRole('ADMIN')")
     @PostMapping("add_training")
     public ResponseEntity<MessageResponse> createUser(@RequestBody AddTrainingRequest addTrainingRequest){
-        return new ResponseEntity<>(trainingService.add(addTrainingRequest),HttpStatus.CREATED);
+        return new ResponseEntity<>(trainingService.addTraining(addTrainingRequest),HttpStatus.CREATED);
     }
 
 }

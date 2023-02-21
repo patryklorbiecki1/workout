@@ -10,6 +10,7 @@ import pl.org.workout.dtos.Response.ProfileResponse;
 import pl.org.workout.enitities.Profile;
 import pl.org.workout.enitities.User;
 import pl.org.workout.exceptions.EntityNotFoundException;
+import pl.org.workout.repositories.ProfileRepository;
 import pl.org.workout.repositories.UserRepository;
 
 @Service
@@ -18,6 +19,7 @@ import pl.org.workout.repositories.UserRepository;
 public class ProfileServiceImpl implements ProfileService{
 
     UserRepository userRepository;
+    ProfileRepository profileRepository;
     @Override
     public ProfileResponse updateInfo(ProfileUpdateRequest request) throws EntityNotFoundException {
         User user = userRepository.findUserByEmail(request.getEmail())

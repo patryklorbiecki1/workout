@@ -4,6 +4,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.FieldNameConstants;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 
 import javax.validation.constraints.Null;
 import java.util.List;
@@ -24,6 +25,8 @@ public class Profile {
     Double height;
     @Null
     String trainingGoal;
+    @DBRef
+    User user;
     @Null
     List<Training> trainings;
 
