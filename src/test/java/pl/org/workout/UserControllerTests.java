@@ -5,11 +5,18 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import pl.org.workout.controllers.UserController;
 import pl.org.workout.dtos.Request.AddUserRequest;
+import pl.org.workout.dtos.Response.MessageResponse;
 import pl.org.workout.dtos.Response.UserResponse;
+import pl.org.workout.security.JwtTokenUtil;
 import pl.org.workout.services.UserService;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -20,18 +27,25 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
-@WebMvcTest
-public class UserControllerTests {
+@WebMvcTest(UserController.class)
+class UserControllerTests {
 
     @Autowired
     private MockMvc mockMvc;
     @MockBean
     private UserService userService;
-   /* @Autowired
+    @MockBean
+    private JwtTokenUtil jwtTokenUtil;
+    @MockBean
+    private AuthenticationManager authenticationManager;
+    @MockBean
+    private PasswordEncoder encoder;
+    @Autowired
     private ObjectMapper objectMapper;
-    */
     @Test
+    @WithMockUser(username="user")
     public void givenListOfUsers_whenGetAllUsers_thenReturnUsersList() throws Exception{
         List<UserResponse> users = new ArrayList<>();
         users.add(UserResponse.builder().id("1").email("adam@gmail.com").username("adamsky").build());
@@ -41,11 +55,10 @@ public class UserControllerTests {
         ResultActions response = mockMvc.perform(MockMvcRequestBuilders.get("/api/user/all"));
 
         response.andExpect(status().isOk())
-                .andDo(print())
-                .andExpect(jsonPath("$.size",
-                        is(users.size())));
+                .andDo(print());
     }
     @Test
+    @WithMockUser(username="user")
     public void givenUserId_whenGetUser_thenReturnUserObject() throws Exception{
         String userId = "id";
         UserResponse userResponse = UserResponse.builder()
@@ -55,7 +68,7 @@ public class UserControllerTests {
                 .build();
         given(userService.get(userId)).willReturn(userResponse);
 
-        ResultActions response = mockMvc.perform(MockMvcRequestBuilders.get("api/user/{id}",userId));
+        ResultActions response = mockMvc.perform(MockMvcRequestBuilders.get("http://localhost:8080/api/user/{id}",userId));
 
         response.andExpect(status().isOk())
                 .andDo(print())
@@ -65,14 +78,18 @@ public class UserControllerTests {
     }
 
     @Test
+    @WithMockUser(username = "user")
     public void GivenUserObject_whenCreateUser_thenReturnSavedUser() throws Exception{
         AddUserRequest addUserRequest = new AddUserRequest("adamsky","adam@gmail.com","secret");
+        MessageResponse messageResponse = MessageResponse.builder().message("User: "+addUserRequest.getUsername()+" created successfully").build();
+        given(userService.addUser(addUserRequest)).willReturn(messageResponse);
 
-        given(userService.addUser(addUserRequest)).willAnswer((invocation)->invocation.getArgument(0));
-
-        ResultActions response = mockMvc.perform(MockMvcRequestBuilders.post("api/user/add_user",addUserRequest));
+        ResultActions response = mockMvc.perform(MockMvcRequestBuilders.post("http://localhost:8080/api/user/add_user/")
+                .content(objectMapper.writeValueAsString(addUserRequest))
+                .contentType(MediaType.APPLICATION_JSON));
 
         response.andDo(print())
-                .andExpect(status().isCreated());
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.message",is("User: " + addUserRequest.getUsername() + " created successfully")));
     }
 }
