@@ -9,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import pl.org.workout.dtos.Request.ExcerciseUpdateRequest;
-import pl.org.workout.dtos.Request.ProfileUpdateRequest;
 import pl.org.workout.services.ExcerciseService;
 
 @RestController
@@ -20,6 +19,7 @@ import pl.org.workout.services.ExcerciseService;
 public class ExcerciseController {
 
     ExcerciseService excerciseService;
+    @PreAuthorize("hasRole('USER') or hasRole('MOD') or hasRole('ADMIN')")
     @GetMapping("{id}")
     public ResponseEntity<?> get(@PathVariable String id){
         try {
@@ -37,5 +37,16 @@ public class ExcerciseController {
             return new ResponseEntity<>(e.getMessage(),HttpStatus.NOT_FOUND);
         }
     }
+    @PreAuthorize("hasRole('USER')")
+    @GetMapping("all")
+    public ResponseEntity<?> getAll(){
+        return new ResponseEntity<>(excerciseService.getAll(),HttpStatus.OK);
+    }
 
+    @PreAuthorize("hasRole('USER')")
+    @DeleteMapping("{id}")
+    public ResponseEntity<String> deleteExcercise(@PathVariable String id) {
+        excerciseService.remove(id);
+        return new ResponseEntity<>("Excercise deleted", HttpStatus.GONE);
+    }
 }

@@ -3,7 +3,6 @@ package pl.org.workout.services;
 import pl.org.workout.dtos.Request.AddUserRequest;
 import pl.org.workout.dtos.Request.LoginRequest;
 import pl.org.workout.dtos.Request.UserRequest;
-import pl.org.workout.dtos.Response.JwtResponse;
 import pl.org.workout.dtos.Response.MessageResponse;
 import pl.org.workout.dtos.Response.ProfileResponse;
 import pl.org.workout.dtos.Response.UserResponse;
