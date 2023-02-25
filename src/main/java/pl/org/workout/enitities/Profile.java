@@ -15,6 +15,8 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @FieldNameConstants
 public class Profile {
+    @Id
+    String id;
     @Null
     String firstname;
     @Null
@@ -25,8 +27,6 @@ public class Profile {
     Double height;
     @Null
     String trainingGoal;
-    @DBRef
-    User user;
     @Null
     List<Training> trainings;
 

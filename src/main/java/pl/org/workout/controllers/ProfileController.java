@@ -9,7 +9,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import pl.org.workout.dtos.Request.ProfileUpdateRequest;
+import pl.org.workout.dtos.Response.ProfileResponse;
 import pl.org.workout.services.ProfileService;
+
+import java.util.List;
 
 @RestController
 @CrossOrigin
@@ -36,5 +39,9 @@ public class ProfileController {
             return new ResponseEntity<>(e.getMessage(),HttpStatus.NOT_FOUND);
         }
     }
-
+    @PreAuthorize("hasRole('USER') or hasRole('MOD') or hasRole('ADMIN')")
+    @GetMapping("all")
+    public ResponseEntity<List<ProfileResponse>> getAll(){
+        return new ResponseEntity<>(profileService.getAll(),HttpStatus.OK);
+    }
 }

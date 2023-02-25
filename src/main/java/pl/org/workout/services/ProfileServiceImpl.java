@@ -13,6 +13,9 @@ import pl.org.workout.exceptions.EntityNotFoundException;
 import pl.org.workout.repositories.ProfileRepository;
 import pl.org.workout.repositories.UserRepository;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
@@ -44,12 +47,17 @@ public class ProfileServiceImpl implements ProfileService{
             if(request.getTrainings()!=null){
                 profile.setTrainings(request.getTrainings());
             }
+            profileRepository.deleteById(user.getProfile().getId());
             user.setProfile(profile);
+            profileRepository.save(profile);
             return ProfileResponse.from(userRepository.save(user).getProfile());
-
     }
     @Override
     public ProfileResponse get(String email) throws EntityNotFoundException{
         return ProfileResponse.from(userRepository.findUserByEmail(email).orElseThrow().getProfile());
+    }
+    @Override
+    public List<ProfileResponse> getAll() {
+        return profileRepository.findAll().stream().map(ProfileResponse::from).collect(Collectors.toList());
     }
 }

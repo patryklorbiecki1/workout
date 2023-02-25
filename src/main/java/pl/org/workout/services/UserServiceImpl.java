@@ -15,10 +15,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.org.workout.dtos.Request.AddUserRequest;
 import pl.org.workout.dtos.Request.LoginRequest;
-import pl.org.workout.dtos.Request.UserRequest;
 import pl.org.workout.dtos.Response.JwtResponse;
 import pl.org.workout.dtos.Response.MessageResponse;
-import pl.org.workout.dtos.Response.ProfileResponse;
 import pl.org.workout.dtos.Response.UserResponse;
 import pl.org.workout.enitities.Profile;
 import pl.org.workout.enitities.User;
@@ -106,15 +104,10 @@ public class UserServiceImpl implements UserService {
                 .build();
 
         userRepository.save(user);
-
+        profileRepository.save(user.getProfile());
         return MessageResponse.builder()
                 .message("User: " + addUserRequest.getUsername() + " created successfully")
                 .build();
-    }
-
-    @Override
-    public ProfileResponse getProfileByUser(UserRequest userRequest) {
-        return profileRepository.findByUserByEmail(userRequest.getEmail());
     }
 
     @Override

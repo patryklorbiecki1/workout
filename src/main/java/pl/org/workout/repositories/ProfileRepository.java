@@ -7,5 +7,4 @@ import pl.org.workout.enitities.Profile;
 
 @Repository
 public interface ProfileRepository extends MongoRepository<Profile,String> {
-    ProfileResponse findByUserByEmail(String email);
 }

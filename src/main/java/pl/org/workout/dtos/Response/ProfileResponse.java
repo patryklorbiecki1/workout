@@ -12,6 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
 public class ProfileResponse {
+    String id;
     String firstname;
     String lastname;
     Double weight;
@@ -20,6 +21,7 @@ public class ProfileResponse {
     List<Training> trainings;
     public static ProfileResponse from(Profile profile){
         return new ProfileResponse(
+                profile.getId(),
                 profile.getFirstname(),
                 profile.getLastname(),
                 profile.getWeight(),

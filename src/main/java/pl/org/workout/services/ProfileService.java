@@ -5,9 +5,11 @@ import pl.org.workout.dtos.Response.MessageResponse;
 import pl.org.workout.dtos.Response.ProfileResponse;
 import pl.org.workout.exceptions.EntityNotFoundException;
 
+import java.util.List;
+
 public interface ProfileService {
 
     ProfileResponse updateInfo(ProfileUpdateRequest profileUpdateRequest) throws EntityNotFoundException;
     ProfileResponse get(String email) throws Exception;
-
+    List<ProfileResponse> getAll();
 }
