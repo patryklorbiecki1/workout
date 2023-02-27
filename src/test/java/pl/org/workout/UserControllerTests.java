@@ -21,13 +21,13 @@ import pl.org.workout.services.UserService;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.BDDMockito.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @WebMvcTest(UserController.class)
 class UserControllerTests {
@@ -68,7 +68,7 @@ class UserControllerTests {
                 .build();
         given(userService.get(userId)).willReturn(userResponse);
 
-        ResultActions response = mockMvc.perform(MockMvcRequestBuilders.get("http://localhost:8080/api/user/{id}",userId));
+        ResultActions response = mockMvc.perform(MockMvcRequestBuilders.get("/api/user/{id}",userId));
 
         response.andExpect(status().isOk())
                 .andDo(print())
@@ -79,17 +79,19 @@ class UserControllerTests {
 
     @Test
     @WithMockUser(username = "user")
-    public void GivenUserObject_whenCreateUser_thenReturnSavedUser() throws Exception{
+    public void givenUserObject_whenCreateUser_thenReturnSavedUser() throws Exception{
         AddUserRequest addUserRequest = new AddUserRequest("adamsky","adam@gmail.com","secret");
         MessageResponse messageResponse = MessageResponse.builder().message("User: "+addUserRequest.getUsername()+" created successfully").build();
         given(userService.addUser(addUserRequest)).willReturn(messageResponse);
 
-        ResultActions response = mockMvc.perform(MockMvcRequestBuilders.post("http://localhost:8080/api/user/add_user/")
+        ResultActions response = mockMvc.perform(MockMvcRequestBuilders.post("/api/user/add_user/")
                 .content(objectMapper.writeValueAsString(addUserRequest))
+                .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON));
 
         response.andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.message",is("User: " + addUserRequest.getUsername() + " created successfully")));
     }
+
 }
