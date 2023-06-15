@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface ProfileService {
 
-    ProfileResponse updateInfo(ProfileUpdateRequest profileUpdateRequest) throws EntityNotFoundException;
-    ProfileResponse get(String email) throws Exception;
+    ProfileResponse updateInfo(ProfileUpdateRequest profileUpdateRequest);
+    ProfileResponse get(String email);
     List<ProfileResponse> getAll();
 }

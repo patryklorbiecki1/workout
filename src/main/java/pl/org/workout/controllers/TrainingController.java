@@ -10,52 +10,49 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import pl.org.workout.dtos.Request.AddTrainingRequest;
 import pl.org.workout.dtos.Request.TrainingUpdateRequest;
-import pl.org.workout.dtos.Response.MessageResponse;
 import pl.org.workout.dtos.Response.TrainingResponse;
 import pl.org.workout.services.TrainingService;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @CrossOrigin
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-@FieldDefaults(makeFinal = true,level = AccessLevel.PRIVATE)
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @RequestMapping("api/training")
 public class TrainingController {
     TrainingService trainingService;
+
     @PreAuthorize("hasRole('USER') or hasRole('MOD') or hasRole('ADMIN')")
     @GetMapping("all")
-    public ResponseEntity<List<TrainingResponse>> getAll(){
-        return new ResponseEntity<>(trainingService.getAll(), HttpStatus.OK);
+    public List<TrainingResponse> getAll() {
+        return trainingService.getAll();
     }
+
     @PreAuthorize("hasRole('USER') or hasRole('MOD') or hasRole('ADMIN')")
     @GetMapping("{id}")
-    public ResponseEntity<?> get(@PathVariable String id){
-        try {
-            return ResponseEntity.ok(trainingService.get(id));
-        }catch (Exception e){
-            return new ResponseEntity<>(e.getMessage(),HttpStatus.NOT_FOUND);
-        }
+    public TrainingResponse get(@PathVariable String id) {
+        return trainingService.get(id);
     }
+
     @PreAuthorize("hasRole('USER') or hasRole('MOD') or hasRole('ADMIN')")
     @PostMapping("add_training")
-    public ResponseEntity<MessageResponse> createTraining(@RequestBody AddTrainingRequest addTrainingRequest){
-        return new ResponseEntity<>(trainingService.addTraining(addTrainingRequest),HttpStatus.CREATED);
+    public TrainingResponse createTraining(@RequestBody AddTrainingRequest addTrainingRequest) {
+        return trainingService.addTraining(addTrainingRequest);
     }
+
     @PreAuthorize("hasRole('USER') or hasRole('MOD') or hasRole('ADMIN')")
     @PutMapping("update")
-    public ResponseEntity<?> updateTraining(@RequestBody TrainingUpdateRequest request) {
-        try {
-            return new ResponseEntity<>(trainingService.update(request), HttpStatus.OK);
-        }catch (Exception e){
-            return new ResponseEntity<>(e.getMessage(),HttpStatus.NOT_FOUND);
-        }
+    public Optional<TrainingResponse> updateTraining(@RequestBody TrainingUpdateRequest request) {
+        return trainingService.update(request);
     }
+
     @PreAuthorize("hasRole('USER') or hasRole('MOD') or hasRole('ADMIN')")
     @DeleteMapping("{id}")
-    public ResponseEntity<String> removeTraining(@PathVariable String id){
-         trainingService.remove(id);
-         return new ResponseEntity<>("Training deleted",HttpStatus.GONE);
+    public ResponseEntity<String> removeTraining(@PathVariable String id) {
+        trainingService.remove(id);
+        return new ResponseEntity<>("Training deleted", HttpStatus.GONE);
     }
 
 

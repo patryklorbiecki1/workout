@@ -30,7 +30,7 @@ public class SecurityConfig {
     private final UserDetailsService userDetailsService;
     private final JwtTokenFilter jwtTokenFilter;
     private final AuthEntryPointJwt  authEntryPointJwt;
-    final String[] AUTH_WHITELIST = {
+    private final static String[] AUTH_WHITELIST = {
             // -- Swagger UI v2
             "/v2/api-docs",
             "/favicon.ico",

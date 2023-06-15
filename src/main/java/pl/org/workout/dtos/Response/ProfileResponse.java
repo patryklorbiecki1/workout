@@ -10,16 +10,10 @@ import java.util.List;
 
 @Getter
 @AllArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE,makeFinal = true)
-public class ProfileResponse {
-    String id;
-    String firstname;
-    String lastname;
-    Double weight;
-    Double height;
-    String trainingGoal;
-    List<Training> trainings;
-    public static ProfileResponse from(Profile profile){
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+public record ProfileResponse(String id, String firstname, String lastname, Double weight, Double height,
+                              String trainingGoal, List<Training> trainings) {
+    public static ProfileResponse from(Profile profile) {
         return new ProfileResponse(
                 profile.getId(),
                 profile.getFirstname(),

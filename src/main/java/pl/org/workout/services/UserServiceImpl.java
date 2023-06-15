@@ -20,7 +20,7 @@ import pl.org.workout.dtos.Response.MessageResponse;
 import pl.org.workout.dtos.Response.UserResponse;
 import pl.org.workout.enitities.Profile;
 import pl.org.workout.enitities.User;
-import pl.org.workout.exceptions.EntityNotFoundException;
+import pl.org.workout.mapper.UserMapper;
 import pl.org.workout.repositories.ProfileRepository;
 import pl.org.workout.repositories.UserRepository;
 import pl.org.workout.security.JwtTokenUtil;
@@ -40,6 +40,7 @@ public class UserServiceImpl implements UserService {
     JwtTokenUtil jwtTokenUtil;
     AuthenticationManager authenticationManager;
     PasswordEncoder encoder;
+    UserMapper userMapper;
 
     @Override
     public List<UserResponse> getAll() {
@@ -47,12 +48,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponse get(String username) throws EntityNotFoundException {
+    public UserResponse get(String username){
         return UserResponse.from(userRepository.findUserByUsername(username));
     }
 
     @Override
-    public MessageResponse signIn(LoginRequest loginRequest) {
+    public String signIn(LoginRequest loginRequest) {
 
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                 loginRequest.getUsername(), loginRequest.getPassword());
@@ -60,7 +61,7 @@ public class UserServiceImpl implements UserService {
         try {
             authenticationResult = authenticationManager.authenticate(authToken);
         } catch (AuthenticationException e) {
-            return MessageResponse.builder().message("Wrong username or password").build();
+            return null;
         }
 
         SecurityContextHolder.getContext().setAuthentication(authenticationResult);
@@ -69,11 +70,11 @@ public class UserServiceImpl implements UserService {
                 .map(GrantedAuthority::getAuthority)
                 .toList();
         String jwtToken = jwtTokenUtil.generateJwtToken(authenticationResult);
-        return MessageResponse.builder().message(new JwtResponse(jwtToken,userDetails.getUsername(),roles).toString()).build();
+        return jwtToken;
     }
     @Override
-    public MessageResponse addUser(AddUserRequest addUserRequest) {
-        if(Boolean.TRUE.equals(userRepository.existsByUsername(addUserRequest.getUsername())))
+    public UserResponse addUser(AddUserRequest addUserRequest) {
+      /*  if(Boolean.TRUE.equals(userRepository.existsByUsername(addUserRequest.getUsername())))
         {
             return MessageResponse.builder()
                     .message("[ERROR] Username: " + addUserRequest.getUsername() + " is already taken")
@@ -84,7 +85,7 @@ public class UserServiceImpl implements UserService {
             return MessageResponse.builder()
                     .message("[ERROR] Email: " + addUserRequest.getEmail() + " is already taken")
                     .build();
-        }
+        }*/
         Profile profile = Profile.builder()
                 .firstname("")
                 .lastname("")
@@ -105,9 +106,10 @@ public class UserServiceImpl implements UserService {
 
         userRepository.save(user);
         profileRepository.save(user.getProfile());
-        return MessageResponse.builder()
+       /* return MessageResponse.builder()
                 .message("User: " + addUserRequest.getUsername() + " created successfully")
-                .build();
+                .build();*/
+        return userMapper.toUserResponse(user);
     }
 
     @Override

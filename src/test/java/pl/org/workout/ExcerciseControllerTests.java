@@ -48,10 +48,10 @@ public class ExcerciseControllerTests {
 
         result.andExpect(status().isOk())
                 .andDo(print())
-                .andExpect(jsonPath("$.id",is(excerciseResponse.getId())))
-                .andExpect(jsonPath("$.name",is(excerciseResponse.getName())))
-                .andExpect(jsonPath("$.weight",is(excerciseResponse.getWeight())))
-                .andExpect(jsonPath("$.reps",is(excerciseResponse.getReps())))
-                .andExpect(jsonPath("$.sets",is(excerciseResponse.getSets())));
+                .andExpect(jsonPath("$.id",is(excerciseResponse.id())))
+                .andExpect(jsonPath("$.name",is(excerciseResponse.name())))
+                .andExpect(jsonPath("$.weight",is(excerciseResponse.weight())))
+                .andExpect(jsonPath("$.reps",is(excerciseResponse.reps())))
+                .andExpect(jsonPath("$.sets",is(excerciseResponse.sets())));
     }
 }

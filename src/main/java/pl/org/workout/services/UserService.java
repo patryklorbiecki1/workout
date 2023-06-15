@@ -9,8 +9,8 @@ import java.util.List;
 
 public interface UserService {
     List<UserResponse> getAll();
-    UserResponse get(String userId) throws Exception;
-    MessageResponse signIn(LoginRequest loginRequest);
-    MessageResponse addUser(AddUserRequest addUserRequest);
+    UserResponse get(String userId);
+    String signIn(LoginRequest loginRequest);
+    UserResponse addUser(AddUserRequest addUserRequest);
     void remove(String userId);
 }

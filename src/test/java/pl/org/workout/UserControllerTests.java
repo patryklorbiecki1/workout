@@ -72,9 +72,9 @@ class UserControllerTests {
 
         response.andExpect(status().isOk())
                 .andDo(print())
-                .andExpect(jsonPath("$.id",is(userResponse.getId())))
-                .andExpect(jsonPath("$.username",is(userResponse.getUsername())))
-                .andExpect(jsonPath("$.email",is(userResponse.getEmail())));
+                .andExpect(jsonPath("$.id",is(userResponse.id())))
+                .andExpect(jsonPath("$.username",is(userResponse.username())))
+                .andExpect(jsonPath("$.email",is(userResponse.email())));
     }
 
     @Test

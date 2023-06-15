@@ -8,39 +8,40 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.org.workout.dtos.Request.AddTrainingRequest;
 import pl.org.workout.dtos.Request.TrainingUpdateRequest;
-import pl.org.workout.dtos.Response.MessageResponse;
 import pl.org.workout.dtos.Response.TrainingResponse;
 import pl.org.workout.enitities.Excercise;
 import pl.org.workout.enitities.Training;
 import pl.org.workout.enitities.User;
-import pl.org.workout.exceptions.EntityNotFoundException;
+import pl.org.workout.mapper.TrainingMapper;
 import pl.org.workout.repositories.ExcerciseRepository;
 import pl.org.workout.repositories.TrainingRepository;
 import pl.org.workout.repositories.UserRepository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-@FieldDefaults(makeFinal = true,level = AccessLevel.PRIVATE)
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-public class TrainingServiceImpl implements TrainingService{
+public class TrainingServiceImpl implements TrainingService {
     TrainingRepository trainingRepository;
     ExcerciseRepository excerciseRepository;
     UserRepository userRepository;
+    TrainingMapper trainingMapper;
+
     @Override
     public List<TrainingResponse> getAll() {
-        return trainingRepository.findAll().stream().map(TrainingResponse::from).toList();
+        return trainingMapper.toTrainingResponseList(trainingRepository.findAll());
     }
 
     @Override
-    public TrainingResponse get(String id) throws EntityNotFoundException {
-        return TrainingResponse.from(trainingRepository.findById(id)
-                .orElseThrow(()-> new EntityNotFoundException(Training.class)));
+    public TrainingResponse get(String id) {
+        return trainingMapper.toTrainingResponse(trainingRepository.findById(id));
     }
 
     @Override
-    public MessageResponse addTraining(AddTrainingRequest addTrainingRequest) {
+    public TrainingResponse addTraining(AddTrainingRequest addTrainingRequest) {
         User user = userRepository.findById(String.valueOf(new ObjectId(addTrainingRequest.getUserId()))).orElseThrow();
         List<Excercise> excercises = addTrainingRequest.getExcercisesId().stream()
                 .map(excerciseId -> excerciseRepository.findById(String.valueOf(new ObjectId(excerciseId))).orElseThrow())
@@ -52,25 +53,19 @@ public class TrainingServiceImpl implements TrainingService{
                 .user(user)
                 .build();
         trainingRepository.save(training);
-        return MessageResponse.builder()
-                .message("Training added successfully")
-                .build();
+        return trainingMapper.toTrainingResponse(Optional.of(training));
     }
 
     @Override
-    public TrainingResponse update(TrainingUpdateRequest request) throws EntityNotFoundException {
-        Training training = trainingRepository.findByDate(request.getDate())
-                .orElseThrow(()->new EntityNotFoundException(Training.class));
-        if(request.getExcercises()!=null){
-            training.setExcercises(request.getExcercises());
-        }
-        if(request.getDuration()!=null){
-            training.setDuration(request.getDuration());
-        }
-        if(request.getDate()!=null){
-            training.setDate(request.getDate());
-        }
-        return TrainingResponse.from(trainingRepository.save(training));
+    public Optional<TrainingResponse> update(TrainingUpdateRequest request) {
+        trainingRepository.findByDate(request.getDate())
+                .map(training -> {
+                    Optional.ofNullable(request.getExcercises()).ifPresent(training::setExcercises);
+                    Optional.ofNullable(request.getDate()).ifPresent(training::setDate);
+                    Optional.ofNullable(request.getDuration()).ifPresent(training::setDuration);
+                    return trainingRepository.save(training);
+                });
+        return Optional.ofNullable(trainingMapper.toTrainingResponse(trainingRepository.findByDate(request.getDate())));
     }
 
     @Override

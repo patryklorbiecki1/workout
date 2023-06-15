@@ -10,25 +10,27 @@ import pl.org.workout.dtos.Request.ExcerciseUpdateRequest;
 import pl.org.workout.dtos.Response.ExcerciseResponse;
 import pl.org.workout.dtos.Response.MessageResponse;
 import pl.org.workout.enitities.Excercise;
-import pl.org.workout.exceptions.EntityNotFoundException;
+import pl.org.workout.mapper.ExcerciseMapper;
 import pl.org.workout.repositories.ExcerciseRepository;
 
 import java.util.List;
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @FieldDefaults(makeFinal = true,level = AccessLevel.PRIVATE)
 public class ExcerciseServiceImpl implements ExcerciseService{
 
     ExcerciseRepository excerciseRepository;
+    ExcerciseMapper excerciseMapper;
     @Override
-    public List<ExcerciseResponse> getAll() {
-        return excerciseRepository.findAll().stream().map(ExcerciseResponse::from).toList();
+    public Optional<List<ExcerciseResponse>> getAll() {
+        return Optional.ofNullable(excerciseMapper.toExcerciseResponseList(excerciseRepository.findAll()));
     }
 
     @Override
-    public ExcerciseResponse getExcerciseById(String excerciseId) throws EntityNotFoundException {
-        return ExcerciseResponse.from(excerciseRepository.findById(excerciseId)
-                .orElseThrow(()-> new EntityNotFoundException("Excercise by id:" + excerciseId + " not found")));
+    public Optional<ExcerciseResponse> getExcerciseById(String excerciseId){
+        return Optional.ofNullable(excerciseMapper.toExcerciseResponse(excerciseRepository.findById(excerciseId)));
     }
 
     @Override
