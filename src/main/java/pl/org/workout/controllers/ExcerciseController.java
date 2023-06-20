@@ -28,8 +28,8 @@ public class ExcerciseController {
     }
 
     @PreAuthorize("hasRole('USER') or hasRole('MOD') or hasRole('ADMIN')")
-    @PatchMapping
-    public ExcerciseResponse update(@RequestBody ExcerciseUpdateRequest request) {
+    @PutMapping
+    public Optional<ExcerciseResponse> update(@RequestBody ExcerciseUpdateRequest request) {
         return excerciseService.update(request);
     }
 
@@ -39,5 +39,9 @@ public class ExcerciseController {
         return excerciseService.add(request);
     }
 
+    @DeleteMapping("{id}")
+    public void remove(@PathVariable String id){
+        excerciseService.remove(id);
+    }
 
 }

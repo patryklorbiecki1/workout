@@ -10,6 +10,6 @@ import java.util.Optional;
 @Mapper(componentModel = "spring")
 public interface ExcerciseMapper {
 
-    ExcerciseResponse toExcerciseResponse(Optional<Excercise> excercise);
+    ExcerciseResponse toExcerciseResponse(Excercise excercise);
     List<ExcerciseResponse> toExcerciseResponseList(List<Excercise> excercises);
 }

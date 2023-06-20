@@ -11,6 +11,6 @@ public interface ExcerciseService {
     Optional<List<ExcerciseResponse>> getAll();
     Optional<ExcerciseResponse> getExcerciseById(String excerciseId);
     ExcerciseResponse add(AddExcerciseRequest addExcerciseRequest);
-    ExcerciseResponse update(ExcerciseUpdateRequest request);
+    Optional<ExcerciseResponse> update(ExcerciseUpdateRequest request);
     void remove(String excerciseId);
 }

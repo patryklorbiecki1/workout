@@ -16,7 +16,6 @@ import java.util.List;
 @Builder
 @Document
 @AllArgsConstructor
-@NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @FieldNameConstants
 public class Training {

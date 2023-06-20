@@ -10,7 +10,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Builder
 @Document
 @AllArgsConstructor
-@NoArgsConstructor
 @FieldNameConstants
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Excercise {

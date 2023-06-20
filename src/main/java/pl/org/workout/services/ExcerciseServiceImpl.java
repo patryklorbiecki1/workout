@@ -29,7 +29,8 @@ public class ExcerciseServiceImpl implements ExcerciseService{
 
     @Override
     public Optional<ExcerciseResponse> getExcerciseById(String excerciseId){
-        return Optional.ofNullable(excerciseMapper.toExcerciseResponse(excerciseRepository.findById(excerciseId)));
+        return excerciseRepository.findById(excerciseId).stream()
+                .map(excerciseMapper::toExcerciseResponse).findFirst();
     }
 
     @Override
@@ -41,12 +42,22 @@ public class ExcerciseServiceImpl implements ExcerciseService{
                 .weight(request.getWeight())
                 .build();
         excerciseRepository.save(excercise);
-        return excerciseMapper.toExcerciseResponse(Optional.of(excercise));
+        return excerciseMapper.toExcerciseResponse(excercise);
     }
 
     @Override
-    public ExcerciseResponse update(ExcerciseUpdateRequest request) {
-        return null;
+    public Optional<ExcerciseResponse> update(ExcerciseUpdateRequest request) {
+        Optional<Excercise> excercise = excerciseRepository.findById(request.id());
+        excercise.ifPresent(ex ->{
+            Optional.ofNullable(request.name()).ifPresent(ex::setName);
+            Optional.ofNullable(request.reps()).ifPresent(ex::setReps);
+            Optional.ofNullable(request.sets()).ifPresent(ex::setSets);
+            Optional.ofNullable(request.weight()).ifPresent(ex::setWeight);
+            excerciseRepository.save(ex);
+        });
+
+        return excerciseRepository.findById(request.id()).stream()
+                .map(excerciseMapper::toExcerciseResponse).findFirst();
     }
 
     @Override

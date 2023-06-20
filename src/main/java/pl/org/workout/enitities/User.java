@@ -16,7 +16,6 @@ import java.util.Set;
 @Document
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @FieldNameConstants
 public class User{
