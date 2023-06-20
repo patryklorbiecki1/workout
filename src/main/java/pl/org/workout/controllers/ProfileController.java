@@ -11,6 +11,7 @@ import pl.org.workout.dtos.Response.ProfileResponse;
 import pl.org.workout.services.ProfileService;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @CrossOrigin
@@ -22,7 +23,7 @@ public class ProfileController {
 
     @PreAuthorize("hasRole('USER') or hasRole('MOD') or hasRole('ADMIN')")
     @GetMapping("{email}")
-    public ProfileResponse get(@PathVariable String email) {
+    public Optional<ProfileResponse> get(@PathVariable String email) {
         return profileService.get(email);
     }
 

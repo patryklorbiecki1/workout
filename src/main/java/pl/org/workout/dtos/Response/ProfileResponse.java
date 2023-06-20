@@ -4,8 +4,8 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.experimental.FieldDefaults;
-import pl.org.workout.enitities.Profile;
 import pl.org.workout.enitities.Training;
+
 import java.util.List;
 
 @Getter
@@ -13,15 +13,5 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public record ProfileResponse(String id, String firstname, String lastname, Double weight, Double height,
                               String trainingGoal, List<Training> trainings) {
-    public static ProfileResponse from(Profile profile) {
-        return new ProfileResponse(
-                profile.getId(),
-                profile.getFirstname(),
-                profile.getLastname(),
-                profile.getWeight(),
-                profile.getHeight(),
-                profile.getTrainingGoal(),
-                profile.getTrainings()
-        );
-    }
+
 }

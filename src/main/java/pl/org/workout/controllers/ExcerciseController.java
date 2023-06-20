@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 import pl.org.workout.dtos.Request.AddExcerciseRequest;
 import pl.org.workout.dtos.Request.ExcerciseUpdateRequest;
 import pl.org.workout.dtos.Response.ExcerciseResponse;
-import pl.org.workout.dtos.Response.MessageResponse;
 import pl.org.workout.services.ExcerciseService;
 
 import java.util.Optional;
@@ -30,16 +29,14 @@ public class ExcerciseController {
 
     @PreAuthorize("hasRole('USER') or hasRole('MOD') or hasRole('ADMIN')")
     @PatchMapping
-    public MessageResponse update(@RequestBody ExcerciseUpdateRequest request) {
-        excerciseService.update(request);
-        return MessageResponse.builder().message("User updated").build();
+    public ExcerciseResponse update(@RequestBody ExcerciseUpdateRequest request) {
+        return excerciseService.update(request);
     }
 
     @PreAuthorize("hasRole('USER') or hasRole('MOD') or hasRole('ADMIN')")
     @PostMapping("add")
-    public MessageResponse add(@RequestBody AddExcerciseRequest request) {
-        excerciseService.add(request);
-        return MessageResponse.builder().message("User created").build();
+    public ExcerciseResponse add(@RequestBody AddExcerciseRequest request) {
+        return excerciseService.add(request);
     }
 
 

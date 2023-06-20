@@ -32,7 +32,7 @@ public class TrainingController {
 
     @PreAuthorize("hasRole('USER') or hasRole('MOD') or hasRole('ADMIN')")
     @GetMapping("{id}")
-    public TrainingResponse get(@PathVariable String id) {
+    public Optional<TrainingResponse> get(@PathVariable String id) {
         return trainingService.get(id);
     }
 

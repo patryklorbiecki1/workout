@@ -23,7 +23,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        pl.org.workout.enitities.User user = userRepository.findUserByUsername(username);
+        pl.org.workout.enitities.User user = userRepository.findUserByUsername(username).orElse(null);
         if (user == null) {
             throw new UsernameNotFoundException("User not found");
         }

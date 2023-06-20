@@ -46,12 +46,16 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public ProfileResponse get(String email) {
-        return ProfileResponse.from(userRepository.findUserByEmail(email).orElseThrow().getProfile());
+    public Optional<ProfileResponse> get(String email) {
+        return userRepository.findUserByEmail(email).stream()
+                .map(User::getProfile)
+                .map(profileMapper::toProfileResponse)
+                .findFirst();
     }
 
     @Override
     public List<ProfileResponse> getAll() {
-        return profileRepository.findAll().stream().map(ProfileResponse::from).collect(Collectors.toList());
+        return profileRepository.findAll().stream().map(profileMapper::toProfileResponse)
+                .collect(Collectors.toList());
     }
 }

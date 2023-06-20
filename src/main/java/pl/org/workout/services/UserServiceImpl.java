@@ -15,8 +15,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.org.workout.dtos.Request.AddUserRequest;
 import pl.org.workout.dtos.Request.LoginRequest;
-import pl.org.workout.dtos.Response.JwtResponse;
-import pl.org.workout.dtos.Response.MessageResponse;
 import pl.org.workout.dtos.Response.UserResponse;
 import pl.org.workout.enitities.Profile;
 import pl.org.workout.enitities.User;
@@ -28,11 +26,12 @@ import pl.org.workout.security.JwtTokenUtil;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-@FieldDefaults(makeFinal = true,level = AccessLevel.PRIVATE)
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class UserServiceImpl implements UserService {
 
     UserRepository userRepository;
@@ -44,12 +43,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserResponse> getAll() {
-        return userRepository.findAll().stream().map(UserResponse::from).toList();
+        return userRepository.findAll().stream().map(userMapper::toUserResponse).toList();
     }
 
     @Override
-    public UserResponse get(String username){
-        return UserResponse.from(userRepository.findUserByUsername(username));
+    public Optional<UserResponse> get(String username) {
+        return userRepository.findUserByUsername(username).stream()
+                .map(userMapper::toUserResponse).findFirst();
     }
 
     @Override
@@ -72,20 +72,10 @@ public class UserServiceImpl implements UserService {
         String jwtToken = jwtTokenUtil.generateJwtToken(authenticationResult);
         return jwtToken;
     }
+
     @Override
     public UserResponse addUser(AddUserRequest addUserRequest) {
-      /*  if(Boolean.TRUE.equals(userRepository.existsByUsername(addUserRequest.getUsername())))
-        {
-            return MessageResponse.builder()
-                    .message("[ERROR] Username: " + addUserRequest.getUsername() + " is already taken")
-                    .build();
-        }
-        if(Boolean.TRUE.equals(userRepository.existsByEmail(addUserRequest.getEmail())))
-        {
-            return MessageResponse.builder()
-                    .message("[ERROR] Email: " + addUserRequest.getEmail() + " is already taken")
-                    .build();
-        }*/
+
         Profile profile = Profile.builder()
                 .firstname("")
                 .lastname("")
@@ -106,9 +96,6 @@ public class UserServiceImpl implements UserService {
 
         userRepository.save(user);
         profileRepository.save(user.getProfile());
-       /* return MessageResponse.builder()
-                .message("User: " + addUserRequest.getUsername() + " created successfully")
-                .build();*/
         return userMapper.toUserResponse(user);
     }
 

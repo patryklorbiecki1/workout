@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import pl.org.workout.dtos.Request.AddExcerciseRequest;
 import pl.org.workout.dtos.Request.ExcerciseUpdateRequest;
 import pl.org.workout.dtos.Response.ExcerciseResponse;
-import pl.org.workout.dtos.Response.MessageResponse;
 import pl.org.workout.enitities.Excercise;
 import pl.org.workout.mapper.ExcerciseMapper;
 import pl.org.workout.repositories.ExcerciseRepository;
@@ -34,7 +33,7 @@ public class ExcerciseServiceImpl implements ExcerciseService{
     }
 
     @Override
-    public MessageResponse add(AddExcerciseRequest request) {
+    public ExcerciseResponse add(AddExcerciseRequest request) {
         Excercise excercise = Excercise.builder()
                 .name(request.getName())
                 .reps(request.getReps())
@@ -42,9 +41,7 @@ public class ExcerciseServiceImpl implements ExcerciseService{
                 .weight(request.getWeight())
                 .build();
         excerciseRepository.save(excercise);
-        return MessageResponse.builder()
-                .message("Excercise: " + request.getName() + " added successfully")
-                .build();
+        return excerciseMapper.toExcerciseResponse(Optional.of(excercise));
     }
 
     @Override

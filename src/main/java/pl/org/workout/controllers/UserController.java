@@ -8,11 +8,11 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import pl.org.workout.dtos.Request.AddUserRequest;
 import pl.org.workout.dtos.Request.LoginRequest;
-import pl.org.workout.dtos.Response.MessageResponse;
 import pl.org.workout.dtos.Response.UserResponse;
 import pl.org.workout.services.UserService;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @CrossOrigin
@@ -35,7 +35,7 @@ public class UserController {
 
     @PreAuthorize("hasRole('USER') or hasRole('MOD') or hasRole('ADMIN')")
     @GetMapping("{username}")
-    public UserResponse get(@PathVariable String username) {
+    public Optional<UserResponse> get(@PathVariable String username) {
         return userService.get(username);
     }
 
@@ -46,8 +46,7 @@ public class UserController {
 
     @PreAuthorize("hasRole('USER') or hasRole('MOD') or hasRole('ADMIN')")
     @DeleteMapping("{id}")
-    public MessageResponse deleteUser(@PathVariable String id) {
+    public void deleteUser(@PathVariable String id) {
         userService.remove(id);
-        return MessageResponse.builder().message("User deleted").build();
     }
 }

@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 @Mapper(componentModel = "spring")
 public interface TrainingMapper {
-    TrainingResponse toTrainingResponse(Optional<Training> training);
+    TrainingResponse toTrainingResponse(Training training);
     List<TrainingResponse> toTrainingResponseList(List<Training> trainings);
 
 }

@@ -36,8 +36,10 @@ public class TrainingServiceImpl implements TrainingService {
     }
 
     @Override
-    public TrainingResponse get(String id) {
-        return trainingMapper.toTrainingResponse(trainingRepository.findById(id));
+    public Optional<TrainingResponse> get(String id) {
+        return trainingRepository.findById(id).stream()
+                .map(trainingMapper::toTrainingResponse)
+                .findFirst();
     }
 
     @Override
@@ -53,7 +55,7 @@ public class TrainingServiceImpl implements TrainingService {
                 .user(user)
                 .build();
         trainingRepository.save(training);
-        return trainingMapper.toTrainingResponse(Optional.of(training));
+        return trainingMapper.toTrainingResponse(training);
     }
 
     @Override
@@ -65,7 +67,8 @@ public class TrainingServiceImpl implements TrainingService {
                     Optional.ofNullable(request.getDuration()).ifPresent(training::setDuration);
                     return trainingRepository.save(training);
                 });
-        return Optional.ofNullable(trainingMapper.toTrainingResponse(trainingRepository.findByDate(request.getDate())));
+        return trainingRepository.findByDate(request.getDate()).stream()
+                .map(trainingMapper::toTrainingResponse).findFirst();
     }
 
     @Override
