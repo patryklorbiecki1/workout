@@ -1,6 +1,9 @@
 package pl.org.workout.enitities;
 
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NonNull;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.FieldNameConstants;
 import org.springframework.data.annotation.Id;
@@ -15,10 +18,9 @@ import java.util.Set;
 @Data
 @Document
 @Builder
-@AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @FieldNameConstants
-public class User{
+public class User {
     @Id
     String id;
     @Indexed(unique = true)
@@ -30,12 +32,14 @@ public class User{
     @NonNull
     String username;
     @NonNull
-    Instant createDate = Instant.now();
+    Instant createDate;
     @DBRef
     Profile profile;
-    public enum Roles{
-        ROLE_USER,ROLE_ADMIN,ROLE_MOD
+
+    public enum Roles {
+        ROLE_USER, ROLE_ADMIN, ROLE_MOD
     }
+
     @NonNull
     Set<Roles> roles = new HashSet<>();
 }

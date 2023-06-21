@@ -1,9 +1,7 @@
 package pl.org.workout.services;
 
 import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -30,7 +28,6 @@ import java.util.Optional;
 import java.util.Set;
 
 @Service
-@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class UserServiceImpl implements UserService {
 
@@ -40,6 +37,17 @@ public class UserServiceImpl implements UserService {
     AuthenticationManager authenticationManager;
     PasswordEncoder encoder;
     UserMapper userMapper;
+
+    public UserServiceImpl(UserRepository userRepository, ProfileRepository profileRepository,
+                           JwtTokenUtil jwtTokenUtil, AuthenticationManager authenticationManager,
+                           PasswordEncoder encoder, UserMapper userMapper) {
+        this.userRepository = userRepository;
+        this.profileRepository = profileRepository;
+        this.jwtTokenUtil = jwtTokenUtil;
+        this.authenticationManager = authenticationManager;
+        this.encoder = encoder;
+        this.userMapper = userMapper;
+    }
 
     @Override
     public List<UserResponse> getAll() {
@@ -56,7 +64,7 @@ public class UserServiceImpl implements UserService {
     public String signIn(LoginRequest loginRequest) {
 
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                loginRequest.getUsername(), loginRequest.getPassword());
+                loginRequest.username(), loginRequest.password());
         Authentication authenticationResult;
         try {
             authenticationResult = authenticationManager.authenticate(authToken);
@@ -86,9 +94,9 @@ public class UserServiceImpl implements UserService {
                 .build();
 
         User user = User.builder()
-                .email(addUserRequest.getEmail())
-                .username(addUserRequest.getUsername())
-                .password(encoder.encode(addUserRequest.getPassword()))
+                .email(addUserRequest.email())
+                .username(addUserRequest.username())
+                .password(encoder.encode(addUserRequest.password()))
                 .createDate(Instant.now())
                 .profile(profile)
                 .roles(Set.of(User.Roles.ROLE_USER))

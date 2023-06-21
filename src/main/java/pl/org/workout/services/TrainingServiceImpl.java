@@ -1,10 +1,8 @@
 package pl.org.workout.services;
 
 import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.bson.types.ObjectId;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.org.workout.dtos.Request.AddTrainingRequest;
 import pl.org.workout.dtos.Request.TrainingUpdateRequest;
@@ -23,12 +21,19 @@ import java.util.stream.Collectors;
 
 @Service
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
-@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class TrainingServiceImpl implements TrainingService {
     TrainingRepository trainingRepository;
     ExcerciseRepository excerciseRepository;
     UserRepository userRepository;
     TrainingMapper trainingMapper;
+
+    public TrainingServiceImpl(TrainingRepository trainingRepository, ExcerciseRepository excerciseRepository,
+                               UserRepository userRepository, TrainingMapper trainingMapper) {
+        this.trainingRepository = trainingRepository;
+        this.excerciseRepository = excerciseRepository;
+        this.userRepository = userRepository;
+        this.trainingMapper = trainingMapper;
+    }
 
     @Override
     public List<TrainingResponse> getAll() {
@@ -44,13 +49,13 @@ public class TrainingServiceImpl implements TrainingService {
 
     @Override
     public TrainingResponse addTraining(AddTrainingRequest addTrainingRequest) {
-        User user = userRepository.findById(String.valueOf(new ObjectId(addTrainingRequest.getUserId()))).orElseThrow();
-        List<Excercise> excercises = addTrainingRequest.getExcercisesId().stream()
+        User user = userRepository.findById(String.valueOf(new ObjectId(addTrainingRequest.userId()))).orElseThrow();
+        List<Excercise> excercises = addTrainingRequest.excercisesId().stream()
                 .map(excerciseId -> excerciseRepository.findById(String.valueOf(new ObjectId(excerciseId))).orElseThrow())
                 .collect(Collectors.toList());
         Training training = Training.builder()
-                .date(addTrainingRequest.getDate())
-                .duration(addTrainingRequest.getDuration())
+                .date(addTrainingRequest.date())
+                .duration(addTrainingRequest.duration())
                 .excercises(excercises)
                 .user(user)
                 .build();
@@ -60,14 +65,14 @@ public class TrainingServiceImpl implements TrainingService {
 
     @Override
     public Optional<TrainingResponse> update(TrainingUpdateRequest request) {
-        trainingRepository.findByDate(request.getDate())
+        trainingRepository.findByDate(request.date())
                 .map(training -> {
-                    Optional.ofNullable(request.getExcercises()).ifPresent(training::setExcercises);
-                    Optional.ofNullable(request.getDate()).ifPresent(training::setDate);
-                    Optional.ofNullable(request.getDuration()).ifPresent(training::setDuration);
+                    Optional.ofNullable(request.excercises()).ifPresent(training::setExcercises);
+                    Optional.ofNullable(request.date()).ifPresent(training::setDate);
+                    Optional.ofNullable(request.duration()).ifPresent(training::setDuration);
                     return trainingRepository.save(training);
                 });
-        return trainingRepository.findByDate(request.getDate()).stream()
+        return trainingRepository.findByDate(request.date()).stream()
                 .map(trainingMapper::toTrainingResponse).findFirst();
     }
 

@@ -5,11 +5,11 @@ import pl.org.workout.dtos.Response.ExcerciseResponse;
 import pl.org.workout.enitities.Excercise;
 
 import java.util.List;
-import java.util.Optional;
 
 @Mapper(componentModel = "spring")
 public interface ExcerciseMapper {
 
     ExcerciseResponse toExcerciseResponse(Excercise excercise);
+
     List<ExcerciseResponse> toExcerciseResponseList(List<Excercise> excercises);
 }

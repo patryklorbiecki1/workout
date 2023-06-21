@@ -1,9 +1,7 @@
 package pl.org.workout.controllers;
 
 import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -17,12 +15,14 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@CrossOrigin
-@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @RequestMapping("api/training")
 public class TrainingController {
     TrainingService trainingService;
+
+    public TrainingController(TrainingService trainingService) {
+        this.trainingService = trainingService;
+    }
 
     @PreAuthorize("hasRole('USER') or hasRole('MOD') or hasRole('ADMIN')")
     @GetMapping("all")

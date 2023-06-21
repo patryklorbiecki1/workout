@@ -1,9 +1,7 @@
 package pl.org.workout.controllers;
 
 import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import pl.org.workout.dtos.Request.AddUserRequest;
@@ -15,12 +13,14 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@CrossOrigin
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
-@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @RequestMapping("/api/user")
 public class UserController {
     UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
     @PostMapping("/login")
     public String loginUser(@RequestBody LoginRequest loginRequest) {
@@ -39,7 +39,7 @@ public class UserController {
         return userService.get(username);
     }
 
-    @PostMapping("add_user")
+    @PostMapping("create")
     public UserResponse createUser(@RequestBody AddUserRequest addUserRequest) {
         return userService.addUser(addUserRequest);
     }

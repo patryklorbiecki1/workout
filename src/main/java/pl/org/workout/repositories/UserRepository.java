@@ -7,9 +7,11 @@ import pl.org.workout.enitities.User;
 import java.util.Optional;
 
 @Repository
-public interface UserRepository extends MongoRepository<User,String> {
+public interface UserRepository extends MongoRepository<User, String> {
     Optional<User> findUserByUsername(String username);
+
     void deleteUserById(String id);
+
     Optional<User> findUserByEmail(String email);
 
 }

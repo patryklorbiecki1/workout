@@ -8,6 +8,6 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 @Repository
-public interface TrainingRepository extends MongoRepository<Training,String> {
+public interface TrainingRepository extends MongoRepository<Training, String> {
     Optional<Training> findByDate(LocalDate date);
 }

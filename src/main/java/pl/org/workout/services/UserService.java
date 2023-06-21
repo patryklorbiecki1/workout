@@ -9,8 +9,12 @@ import java.util.Optional;
 
 public interface UserService {
     List<UserResponse> getAll();
+
     Optional<UserResponse> get(String userId);
+
     String signIn(LoginRequest loginRequest);
+
     UserResponse addUser(AddUserRequest addUserRequest);
+
     void remove(String userId);
 }

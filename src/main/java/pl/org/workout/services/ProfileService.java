@@ -9,6 +9,8 @@ import java.util.Optional;
 public interface ProfileService {
 
     ProfileResponse updateInfo(ProfileUpdateRequest profileUpdateRequest);
+
     Optional<ProfileResponse> get(String email);
+
     List<ProfileResponse> getAll();
 }

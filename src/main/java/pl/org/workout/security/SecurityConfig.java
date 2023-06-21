@@ -9,12 +9,12 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
@@ -29,7 +29,7 @@ public class SecurityConfig {
 
     private final UserDetailsService userDetailsService;
     private final JwtTokenFilter jwtTokenFilter;
-    private final AuthEntryPointJwt  authEntryPointJwt;
+    private final AuthEntryPointJwt authEntryPointJwt;
     private final static String[] AUTH_WHITELIST = {
             // -- Swagger UI v2
             "/v2/api-docs",
@@ -47,9 +47,10 @@ public class SecurityConfig {
             "/api/**"
             // other public endpoints of your API may be appended to this array
     };
+
     @Autowired
     public SecurityConfig(UserDetailsService userDetailsService, JwtTokenFilter jwtTokenFilter,
-                          AuthEntryPointJwt authEntryPointJwt){
+                          AuthEntryPointJwt authEntryPointJwt) {
         this.userDetailsService = userDetailsService;
         this.jwtTokenFilter = jwtTokenFilter;
         this.authEntryPointJwt = authEntryPointJwt;
@@ -57,21 +58,17 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.headers().frameOptions().sameOrigin().and()
-                .cors().and().csrf().disable()
-                .exceptionHandling().authenticationEntryPoint(authEntryPointJwt)
-                .and()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .authorizeRequests().antMatchers(AUTH_WHITELIST).permitAll()
-                .antMatchers("/api/user/add_user").permitAll()
-                .anyRequest().authenticated()
-                .and()
-                .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
+        http.csrf(AbstractHttpConfigurer::disable)
+                .exceptionHandling(exception -> exception.authenticationEntryPoint(authEntryPointJwt))
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(auth -> auth.requestMatchers("/api/user/login").permitAll()
+                        .requestMatchers("/api/user/create").permitAll()
+                        .anyRequest().authenticated());
         return http.build();
     }
+
     @Bean
-    public CorsFilter corsFilter(){
+    public CorsFilter corsFilter() {
         UrlBasedCorsConfigurationSource source =
                 new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
@@ -79,9 +76,10 @@ public class SecurityConfig {
         config.setAllowedOriginPatterns(Collections.singletonList("*"));
         config.setAllowedHeaders(Collections.singletonList("*"));
         config.setAllowedMethods(Collections.singletonList("*"));
-        source.registerCorsConfiguration("/**",config);
+        source.registerCorsConfiguration("/**", config);
         return new CorsFilter(source);
     }
+
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
@@ -89,8 +87,9 @@ public class SecurityConfig {
         authProvider.setPasswordEncoder(passwordEncoder());
         return authProvider;
     }
+
     @Bean
-    public PasswordEncoder passwordEncoder(){
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 

@@ -1,9 +1,7 @@
 package pl.org.workout.services;
 
 import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.org.workout.dtos.Request.ProfileUpdateRequest;
 import pl.org.workout.dtos.Response.ProfileResponse;
@@ -18,7 +16,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ProfileServiceImpl implements ProfileService {
 
@@ -26,18 +23,24 @@ public class ProfileServiceImpl implements ProfileService {
     ProfileRepository profileRepository;
     ProfileMapper profileMapper;
 
+    public ProfileServiceImpl(UserRepository userRepository, ProfileRepository profileRepository, ProfileMapper profileMapper) {
+        this.userRepository = userRepository;
+        this.profileRepository = profileRepository;
+        this.profileMapper = profileMapper;
+    }
+
     @Override
     public ProfileResponse updateInfo(ProfileUpdateRequest request) {
-        Optional<User> user = userRepository.findUserByEmail(request.getEmail());
+        Optional<User> user = userRepository.findUserByEmail(request.email());
         user.ifPresent(u -> {
             Profile profile = user.orElseThrow().getProfile();
             profileRepository.delete(profile);
-            Optional.ofNullable(request.getFirstname()).ifPresent(profile::setFirstname);
-            Optional.ofNullable(request.getLastname()).ifPresent(profile::setLastname);
-            Optional.ofNullable(request.getWeight()).ifPresent(profile::setWeight);
-            Optional.ofNullable(request.getHeight()).ifPresent(profile::setHeight);
-            Optional.ofNullable(request.getTrainingGoal()).ifPresent(profile::setTrainingGoal);
-            Optional.ofNullable(request.getTrainings()).ifPresent(profile::setTrainings);
+            Optional.ofNullable(request.firstname()).ifPresent(profile::setFirstname);
+            Optional.ofNullable(request.lastname()).ifPresent(profile::setLastname);
+            Optional.ofNullable(request.weight()).ifPresent(profile::setWeight);
+            Optional.ofNullable(request.height()).ifPresent(profile::setHeight);
+            Optional.ofNullable(request.trainingGoal()).ifPresent(profile::setTrainingGoal);
+            Optional.ofNullable(request.trainings()).ifPresent(profile::setTrainings);
             user.orElseThrow().setProfile(profile);
             profileRepository.save(profile);
             userRepository.save(u);

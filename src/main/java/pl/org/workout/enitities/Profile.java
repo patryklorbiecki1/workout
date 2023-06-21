@@ -1,11 +1,14 @@
 package pl.org.workout.enitities;
 
-import lombok.*;
+import jakarta.validation.constraints.Null;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.FieldNameConstants;
 import org.springframework.data.annotation.Id;
 
-import javax.validation.constraints.Null;
 import java.util.List;
 
 @Data

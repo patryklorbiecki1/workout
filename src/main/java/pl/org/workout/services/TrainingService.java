@@ -9,8 +9,12 @@ import java.util.Optional;
 
 public interface TrainingService {
     List<TrainingResponse> getAll();
+
     Optional<TrainingResponse> get(String trainingId);
+
     TrainingResponse addTraining(AddTrainingRequest addTrainingRequest);
+
     Optional<TrainingResponse> update(TrainingUpdateRequest request);
+
     void remove(String trainingId);
 }

@@ -9,8 +9,12 @@ import java.util.Optional;
 
 public interface ExcerciseService {
     Optional<List<ExcerciseResponse>> getAll();
+
     Optional<ExcerciseResponse> getExcerciseById(String excerciseId);
+
     ExcerciseResponse add(AddExcerciseRequest addExcerciseRequest);
+
     Optional<ExcerciseResponse> update(ExcerciseUpdateRequest request);
+
     void remove(String excerciseId);
 }

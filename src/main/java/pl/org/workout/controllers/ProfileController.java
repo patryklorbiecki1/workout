@@ -1,9 +1,7 @@
 package pl.org.workout.controllers;
 
 import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import pl.org.workout.dtos.Request.ProfileUpdateRequest;
@@ -14,12 +12,14 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@CrossOrigin
-@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @RequestMapping("api/profile")
 public class ProfileController {
     ProfileService profileService;
+
+    public ProfileController(ProfileService profileService) {
+        this.profileService = profileService;
+    }
 
     @PreAuthorize("hasRole('USER') or hasRole('MOD') or hasRole('ADMIN')")
     @GetMapping("{email}")

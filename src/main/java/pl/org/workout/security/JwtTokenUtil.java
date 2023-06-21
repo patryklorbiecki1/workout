@@ -10,13 +10,15 @@ import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
 import java.util.Date;
+
 @Component
 public class JwtTokenUtil implements Serializable {
-        private static final Logger logger = LoggerFactory.getLogger(JwtTokenUtil.class);
-        @Value("${jwtExpirationMs}")
-        private long jwtExpirationMs;
-        @Value("${jwtSecret}")
-        private String jwtSecret;
+    private static final Logger logger = LoggerFactory.getLogger(JwtTokenUtil.class);
+    @Value("${jwtExpirationMs}")
+    private long jwtExpirationMs;
+    @Value("${jwtSecret}")
+    private String jwtSecret;
+
     public String generateJwtToken(Authentication authentication) {
 
         UserDetails userPrincipal = (UserDetails) authentication.getPrincipal();
